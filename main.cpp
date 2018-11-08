@@ -97,16 +97,22 @@ int main(int argc, const char * argv[])
       continue;
     }
 
-    cv::Mat img = cv::imread(target.string(), 1);
-    if(img.empty()){
-      std::cerr << "failed to open image file. skip.." << std::endl;
+    try{
+      cv::Mat img = cv::imread(target.string(), 1);
+      if(img.empty()){
+        std::cerr << "failed to open image file. skip.." << std::endl;
+      }
+      cv::flip(img, img, 1);
+      int const lines = 1364;
+      std::cerr << "writing image...:" << target.string() << std::endl;
+      write(img, lines);
+      std::cerr << "complete!" << std::endl;
+      show(lines);
     }
-    cv::flip(img, img, 1);
-    int const lines = 1364;
-    std::cerr << "writing image...:" << target.string() << std::endl;
-    write(img, lines);
-    std::cerr << "complete!" << std::endl;
-    show(lines);
+    catch(cv::Exception& e){
+      std::cerr << "image load error" << std::endl;
+    }
+
   }
   return 0;
 }
