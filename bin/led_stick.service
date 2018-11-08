@@ -1,6 +1,6 @@
 [Unit]
 Description=led stick service
-After=network.target remote-fs.target nss-lookup.target
+After=local-fs.target
 ConditionPathExists=/home/pi/github/YGFYHD2018/led_stick
 
 [Service]

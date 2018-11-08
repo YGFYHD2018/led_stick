@@ -94,6 +94,7 @@ int main(int argc, const char * argv[])
     filesys::path& target = paths[s_select%paths.size()];
 
     if(!filesys::is_regular_file(target)){
+      s_select++;
       continue;
     }
 
@@ -101,6 +102,8 @@ int main(int argc, const char * argv[])
       cv::Mat img = cv::imread(target.string(), 1);
       if(img.empty()){
         std::cerr << "failed to open image file. skip.." << std::endl;
+        s_select++;
+	      continue;
       }
       cv::flip(img, img, 1);
       int const lines = 1364;
@@ -111,6 +114,7 @@ int main(int argc, const char * argv[])
     }
     catch(cv::Exception& e){
       std::cerr << "image load error" << std::endl;
+      s_select++;
     }
 
   }
