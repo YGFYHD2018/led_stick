@@ -1,0 +1,12 @@
+[Unit]
+Description=led stick service
+After=network.target remote-fs.target nss-lookup.target
+ConditionPathExists=/home/pi/github/YGFYHD2018/led_stick
+
+[Service]
+ExecStart=/opt/led_stick/bin/led_stick.sh
+Restart=no
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
