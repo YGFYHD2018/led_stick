@@ -5,7 +5,7 @@ TARGET	:= show_pic
 PROJ_ROOT := $(realpath .)
 VPATH	 := $(PROJ_ROOT)
 INCLUDES  := `pkg-config opencv --cflags` \
-			 -I$(PROJ_ROOT)/../lib
+			 -I$(PROJ_ROOT)/lib
 SRCS	  := main.cpp fileutils.cpp
 LIBS	  := -lpthread \
 			 -ldl \
@@ -27,7 +27,7 @@ all: $(TARGET)
 make: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CXX) -o $@ $(OBJS) $(LIBS) -L../lib
+	$(CXX) -o $@ $(OBJS) $(LIBS) -L./lib
 
 .PHONY: clean
 clean:
