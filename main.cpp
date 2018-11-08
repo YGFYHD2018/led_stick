@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <dirent.h>
+#include <algorithm>
 
 namespace
 {
@@ -86,6 +87,9 @@ int main(int argc, const char * argv[])
   
   std::vector<filesys::path> paths;
   read_directory(argv[1], paths);
+ 
+  std::sort(paths.begin(), paths.end());
+ 
   for(;;){
     filesys::path& target = paths[s_select%paths.size()];
 
