@@ -1,12 +1,15 @@
 #include "stick_sdk.h"
+#include "fileutils.h"
 #include <opencv2/opencv.hpp>
 #include <thread>
+#include <string>
+#include <vector>
+#include <dirent.h>
 
 namespace
 {
-  std::vector<std::string> const images{ "o.png", "me.png", "de.png", "to.png", "u.png" };
 
-  int s_select = 0;
+  unsigned int s_select = 0;
   
   bool s_button_event = false;
   
@@ -23,7 +26,7 @@ namespace
     int const count = 10;
     while(count != sampling_button(count));
     while(0 != sampling_button(count));
-    s_select = (s_select + 1) % images.size();
+    s_select++;
     s_button_event = true;
     std::cerr << "button pushed!" << std::endl;
   }
@@ -60,6 +63,15 @@ namespace
 
 int main(int argc, const char * argv[])
 {
+  if(argc < 2){
+    std::cerr << "input image file path." << std::endl;
+    return 1;
+  }
+  if(!init_sdk()){
+    std::cerr << "failed to init stick sdk." << std::endl;
+    return 2;
+  }
+
   if(!init_sdk()){
     std::cerr << "failed to init stick sdk." << std::endl;
     return 2;
@@ -69,16 +81,25 @@ int main(int argc, const char * argv[])
     button_monitor();
   }
   });
+
   stop_led_demo();
+  
+  std::vector<filesys::path> paths;
+  read_directory(argv[1], paths);
   for(;;){
-    cv::Mat img = cv::imread("../images/" + images[s_select], 1);
+    filesys::path& target = paths[s_select%paths.size()];
+
+    if(!filesys::is_regular_file(target)){
+      continue;
+    }
+
+    cv::Mat img = cv::imread(target.string(), 1);
     if(img.empty()){
-        std::cerr << "failed to open image file." << std::endl;
-      return 3;
+      std::cerr << "failed to open image file. skip.." << std::endl;
     }
     cv::flip(img, img, 1);
     int const lines = 1364;
-    std::cerr << "writing image..." << std::endl;
+    std::cerr << "writing image...:" << target.string() << std::endl;
     write(img, lines);
     std::cerr << "complete!" << std::endl;
     show(lines);
